@@ -1,6 +1,6 @@
 # Cybersecurity Portfolio: SOC Analyst
 
-Hands-on projects from my home lab, built to show the practical skills of a Junior SOC / Security Analyst: collecting endpoint telemetry, investigating events, building detections, and documenting findings so another analyst can reproduce them.
+Hands on projects from my home lab, built to show the practical skills of a Junior SOC / Security Analyst: collecting endpoint telemetry, investigating events, building detections, and documenting findings so another analyst can reproduce them.
 
 Every project includes the commands I ran, the evidence I collected, what the evidence proves (and what it doesn't), and the problems I hit along the way.
 
@@ -38,3 +38,7 @@ Guided exercises from SOC training platforms (mainly LetsDefend) are in [practic
 - All testing is done only on devices and accounts I own.
 - No vulnerable target is ever exposed to the internet.
 - Published evidence is sanitised: no usernames, hostnames, email addresses, SIDs, full IP addresses or credentials.
+
+---
+
+© 2026 Isaac. All rights reserved. You are welcome to read this work; please ask before reusing or republishing any part of it.
