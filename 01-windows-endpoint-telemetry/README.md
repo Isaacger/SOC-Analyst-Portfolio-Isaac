@@ -1,4 +1,4 @@
-# Project 00 — Windows Endpoint Telemetry into Splunk Cloud
+# Project 01 — Windows Endpoint Telemetry into Splunk Cloud
 
 I had built and validated a pipeline that sends Windows Security and Sysmon logs from a Windows 10 laptop to Splunk Cloud. I then proved the events arrive unchanged and answer real questions. Along the way I found and fixed a Sysmon configuration that was silently blocking every executable on the machine.
 
