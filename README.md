@@ -41,4 +41,5 @@ Guided exercises from SOC training platforms (mainly LetsDefend) are in [practic
 
 ---
 
-© 2026 Isaac. All rights reserved. You are welcome to read this work; please ask before reusing or republishing any part of it.
+© 2026 Isaac De Arco.  All rights reserved. You are welcome to read this work; please ask before reusing or republishing any part of it.
+GRacIaS! :)
