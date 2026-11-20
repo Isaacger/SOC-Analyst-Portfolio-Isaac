@@ -1,59 +1,36 @@
-# myPortfolio
+# Cybersecurity Portfolio: SOC Analyst
 
-Hands-on blue-team investigations, detections and automation, documented the way a SOC analyst would report them.
+Hands-on projects from my home lab, built to show the practical skills of a Junior SOC / Security Analyst: collecting endpoint telemetry, investigating events, building detections, and documenting findings so another analyst can reproduce them.
 
-**Focus areas:** alert triage · incident investigation · network forensics · Windows/AD logs · malware analysis · SIEM detection (KQL / SPL) · SOAR automation
+Every project includes the commands I ran, the evidence I collected, what the evidence proves (and what it doesn't), and the problems I hit along the way.
 
----
+## Projects
 
-## 📋 Index
- **Status key:** ✅ Complete · 🟡 In progress · 🔲 Not started
+| # | Project | Focus | Status |
+|---|---|---|---|
+| 01 | [Windows Endpoint Telemetry and SIEM Integration](01-windows-endpoint-telemetry/) | Sysmon, Windows audit policy, Splunk Universal Forwarder, end-to-end log validation | ✅ Complete |
+| 02 | Windows Security Event Investigation | Logon and account activity, timelines | Planned |
+| 03 | Sysmon Endpoint Monitoring | Process and network telemetry, config tuning | Planned |
+| 04 | Splunk Windows Log Investigation | SPL, field validation, alerts, dashboards | Planned |
+| 05 | Sentinel Azure SOC Investigation | KQL, analytics rules, incidents | Planned |
+| 06 | Network Reconnaissance | Nmap discovery and service enumeration (lab only) | Planned |
+| 07 | Wireshark Traffic Investigation | DNS, TCP, HTTP analysis | Planned |
+| 08 | Brute Force Detection Engineering | Failed-logon detections in SPL and KQL, thresholds | Planned |
+| 09 | Phishing Investigation | Headers, URLs, IOCs, verdict | Planned |
+| 10 | Malware Static Analysis | Hashes, strings, imports (safe samples only) | Planned |
+| 11 | Vulnerability Assessment | Scanning an isolated vulnerable target, prioritised findings | Planned |
+| 12 | MITRE Detection Mapping and SOC Automation | ATT&CK-mapped detections, Python/PowerShell tooling | Planned |
 
-| # | Area | Investigation | Tools | Status |
-|---|---|---|---|---|
-| 01 | Alert Triage | [SOC101 – Phishing](01-alert-triage/letsdefend-SOC101-phishing/) | LetsDefend, VirusTotal | 🔲 |
-| 01 | Alert Triage | [SOC102 – Brute Force](01-alert-triage/letsdefend-SOC102-bruteforce/) | LetsDefend, AbuseIPDB | 🔲 |
-| 02 | Incident Investigation | [SSH Brute-Force](02-incident-investigations/ssh-bruteforce/) | auth.log, Wazuh | 🔲 |
-| 02 | Incident Investigation | [Phishing Email](02-incident-investigations/phishing-email/) | Email headers, PhishTool | 🔲 |
-| 02 | Incident Investigation | [Suspicious Login](02-incident-investigations/suspicious-login/) | Entra ID, Sentinel | 🔲 |
-| 03 | Network Traffic | [Wireshark DNS/HTTP PCAP](03-network-traffic-analysis/wireshark-dns-http-pcap/) | Wireshark, Zeek | 🔲 |
-| 04 | Endpoint & Windows | [Windows Event Logs](04-endpoint-and-windows/windows-event-logs/) | Sysmon, Chainsaw | 🔲 |
-| 04 | Endpoint & Windows | [Active Directory Auth](04-endpoint-and-windows/active-directory-auth/) | Event IDs 4624/4625/4769 | 🔲 |
-| 05 | Malware Analysis | [Static Analysis – Sample 01](05-malware-analysis/static-analysis-sample-01/) | PEStudio, CAPA, YARA | 🔲 |
-| 06 | SIEM Detection | [Sentinel KQL](06-siem-detection/sentinel-kql/) | Microsoft Sentinel | 🔲 |
-| 06 | SIEM Detection | [Splunk SPL](06-siem-detection/splunk-spl/) | Splunk | 🔲 |
-| 07 | Automation | [PowerShell Scripts](07-automation-and-scripting/powershell-scripts/) | PowerShell | 🔲 |
-| 07 | Automation | [SOAR – Shuffle + Wazuh + TheHive](07-automation-and-scripting/soar-shuffle-wazuh-thehive/) | Shuffle, Wazuh, TheHive | 🔲 |
+## Lab
 
----
+| Role | System |
+|---|---|
+| Windows endpoint | Lenovo laptop, Windows 10, Sysmon, Microsoft Defender |
+| Analyst workstation | MacBook Pro, macOS |
+| SIEM | Splunk Cloud; Microsoft Sentinel planned for Project 05 |
 
-## 🗂️ Repository Structure
+## Ground rules
 
-```
-soc-analyst-portfolio/
-├── 01-alert-triage/
-├── 02-incident-investigations/
-├── 03-network-traffic-analysis/
-├── 04-endpoint-and-windows/
-├── 05-malware-analysis/
-├── 06-siem-detection/
-├── 07-automation-and-scripting/
-└── templates/investigation-report-template.md
-```
-
-Each investigation folder contains:
-- `README.md` – the full report (summary, steps, IOCs, timeline, verdict, MITRE mapping)
-- `screenshots/` – annotated evidence images
-- `evidence/` – sanitized logs, query output, exported artefacts
-
-## 🧰 Skills & Tools
-SIEM: Splunk, Microsoft Sentinel, Wazuh · Network: Wireshark, Zeek · Endpoint: Sysmon, Event Viewer, Chainsaw · Malware: PEStudio, CAPA, YARA · Automation: PowerShell, Shuffle, TheHive · Frameworks: MITRE ATT&CK, Cyber Kill Chain, NIST 800-61
-
-## ⚠️ Disclaimer
-All work was performed in lab/training environments. IOCs are defanged. No live malware, real customer data or employer data is stored in this repository.
-
-## 📫 Contact
-<p>
-  <a href="https://www.linkedin.com/in/isaacdearcosalcedo/">
-    <img src="https://img.shields.io/badge/LinkedIn-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn"/>
-</p>
+- All testing is done only on devices and accounts I own.
+- No vulnerable target is ever exposed to the internet.
+- Published evidence is sanitised: no usernames, hostnames, email addresses, SIDs, full IP addresses or credentials.

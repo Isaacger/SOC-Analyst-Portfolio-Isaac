@@ -1,0 +1,27 @@
+``` Project 01 - validation searches (Splunk Cloud, Search & Reporting, time range: Last 7 days) ```
+``` Fields LogName and EventCode come from the classic Windows event header (renderXml = false), so no add-on is needed. ```
+
+``` Search 1 - Process creation (4688) arrives with command lines.
+    Filtered to the two test markers: an unfiltered search showed an older 4688 from before the
+    command-line fix (empty command line), which does not prove the point.
+    Expected: one row per test run, each Message showing the full command line. ```
+index=main LogName=Security EventCode=4688 ("cmdline-test" OR "splunk-e2e-test")
+| table _time host EventCode Message
+
+``` Search 2 - Sysmon process creation (Event 1) arrives.
+    Expected: many rows, because the lab config logs every process. ```
+index=main LogName="Microsoft-Windows-Sysmon/Operational" EventCode=1
+| table _time host EventCode Message
+| head 20
+
+``` Search 3 - Failed logons (4625) counted per host, with first and last time seen.
+    Result on 19 Nov 2026: 7 events (16 Nov 14:32:07 to 19 Nov 09:14:58).
+    Reading the messages: 3 = my runas test, 4 = benign (browser checks, Guest lookup, lock screen).
+    A count alone is not a finding - read the events before escalating. ```
+index=main LogName=Security EventCode=4625
+| stats count earliest(_time) AS first_seen latest(_time) AS last_seen BY host
+| convert ctime(first_seen) ctime(last_seen)
+
+``` End-to-end check (item 05): find the marked test event. ```
+index=main EventCode=4688 "splunk-e2e-test"
+| table _time host source EventCode

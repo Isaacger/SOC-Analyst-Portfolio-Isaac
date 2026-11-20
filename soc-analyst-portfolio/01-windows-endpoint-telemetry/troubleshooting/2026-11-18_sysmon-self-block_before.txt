@@ -1,0 +1,69 @@
+Project 01 - Troubleshooting evidence: Sysmon self-blocking (BEFORE fix)
+Captured: 2026-11-18 ~10:27-10:28 (endpoint local time = UTC+2, see UtcTime fields)
+Sanitised: hostname and username replaced with <HOSTNAME>\<user>.
+
+----------------------------------------------------------------------
+STEP 1 - Existing block events (query run before the reproduction test)
+----------------------------------------------------------------------
+PS> Get-WinEvent -FilterHashtable @{LogName='Microsoft-Windows-Sysmon/Operational'; Id=27,28} -MaxEvents 5 | Format-List TimeCreated, Id, Message
+
+TimeCreated : 18/11/2026 10:27:00
+Id          : 28
+Message     : File Block Shredding:
+              RuleName: -
+              UtcTime: 2026-11-18 08:27:00.321
+              ProcessGuid: {d7d569c4-43f2-6afc-4f00-000000000500}
+              ProcessId: 3768
+              User: NT AUTHORITY\SERVICIO LOCAL
+              Image: C:\WINDOWS\System32\svchost.exe
+              TargetFilename: C:\Windows\System32\sru\SRU.log
+              Hashes: SHA256=DE2F256064A0AF797747C2B97505DC0B9F3DF0DE4F489EAC731C23AE9CA9CC31
+              IsExecutable: false
+
+[4 further identical Event 28 entries at 10:27:00 (UtcTime .290, .252, .221, .189) omitted]
+
+----------------------------------------------------------------------
+STEP 2 - Controlled reproduction (harmless signed Windows binary)
+----------------------------------------------------------------------
+PS> Copy-Item C:\Windows\System32\notepad.exe C:\LabEvidence\blocktest.exe
+(no error shown in the console - the block is silent to the user)
+
+----------------------------------------------------------------------
+STEP 3 - Block events after the reproduction
+----------------------------------------------------------------------
+PS> Get-WinEvent -FilterHashtable @{LogName='Microsoft-Windows-Sysmon/Operational'; Id=27,28} -MaxEvents 5 | Format-List TimeCreated, Id, Message
+
+TimeCreated : 18/11/2026 10:28:41
+Id          : 27
+Message     : File Block Executable:
+              RuleName: -
+              UtcTime: 2026-11-18 08:28:41.150
+              ProcessGuid: {d7d569c4-9563-6afc-5e06-000000000500}
+              ProcessId: 11248
+              User: <HOSTNAME>\<user>
+              Image: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe
+              TargetFilename: C:\LabEvidence\blocktest.exe
+              Hashes: SHA256=DA5807BB0997CC6B5132950EC87EDA2B33B1AC4533CF1F7A22A6F3B576ED7C5B
+
+TimeCreated : 18/11/2026 10:28:00
+Id          : 28
+Message     : File Block Shredding:
+              RuleName: -
+              UtcTime: 2026-11-18 08:28:00.288
+              ProcessGuid: {d7d569c4-43f2-6afc-4f00-000000000500}
+              ProcessId: 3768
+              User: NT AUTHORITY\SERVICIO LOCAL
+              Image: C:\WINDOWS\System32\svchost.exe
+              TargetFilename: C:\Windows\System32\sru\SRU.log
+              Hashes: SHA256=DE2F256064A0AF797747C2B97505DC0B9F3DF0DE4F489EAC731C23AE9CA9CC31
+              IsExecutable: false
+
+[3 further identical Event 28 entries at 10:28:00 (UtcTime .257, .242, .204) omitted]
+
+----------------------------------------------------------------------
+Configuration at the time (from `sysmon64 -c`, 17/11/2026)
+----------------------------------------------------------------------
+ - Config file:  .\sysmon-all.xml
+ - Config hash:  SHA256=B3B9EFA9C3F5777E45545E9C836A02A491AE611685E565DC40BDB6BAE151992F
+ - FileBlockExecutable   onmatch: exclude   (no rules -> every executable write matches -> blocked)
+ - FileBlockShredding    onmatch: exclude   (no rules -> every shredding attempt matches -> blocked)

@@ -1,0 +1,67 @@
+Project 01 - Troubleshooting evidence: Sysmon self-blocking (FIX + VERIFICATION)
+Captured: 2026-11-18 ~11:20-11:24 (local time on the endpoint)
+No hostname or username appears in this output.
+
+Note for honesty: the configuration was first applied once BEFORE the registry backup
+was taken, so the backup (sysmon-params-backup.reg) holds the fixed configuration.
+The original configuration remains available as sysmon-all.xml for rollback.
+
+----------------------------------------------------------------------
+STEP 1 - Confirm the edit in the lab copy of the config
+----------------------------------------------------------------------
+PS> Select-String -Path C:\LabEvidence\sysmon-lab.xml -Pattern 'FileBlock'
+
+C:\LabEvidence\sysmon-lab.xml:23:    <FileBlockExecutable onmatch="include" />
+C:\LabEvidence\sysmon-lab.xml:24:    <FileBlockShredding onmatch="include" />
+
+----------------------------------------------------------------------
+STEP 2 - Backup, then apply
+----------------------------------------------------------------------
+PS> reg export HKLM\SYSTEM\CurrentControlSet\Services\SysmonDrv\Parameters C:\LabEvidence\sysmon-params-backup.reg /y
+La operación se completó correctamente.
+PS> $fix = Get-Date
+PS> sysmon64 -c C:\LabEvidence\sysmon-lab.xml
+
+System Monitor v15.22 - System activity monitor
+Loading configuration file with schema version 4.90
+Sysmon schema version: 4.91
+Configuration file validated.
+Configuration updated.
+
+----------------------------------------------------------------------
+STEP 3 - Verify the active configuration
+----------------------------------------------------------------------
+PS> sysmon64 -c
+
+Current configuration:
+ - Service name:                  Sysmon64
+ - Driver name:                   SysmonDrv
+ - Config file:                   C:\LabEvidence\sysmon-lab.xml
+ - Config hash:                   SHA256=C20B9B982792641ECF0C25E5F1C5CE0001E00A29EBCD7975899072142A876F2D
+ - HashingAlgorithms:             SHA256
+Rule configuration (version 4.90):
+ [... 19 logging rules unchanged: onmatch exclude ...]
+ - FileBlockExecutable                onmatch: include   combine rules using 'And'
+ - FileBlockShredding                 onmatch: include   combine rules using 'And'
+ - FileExecutableDetected             onmatch: exclude   combine rules using 'And'
+
+----------------------------------------------------------------------
+STEP 4 - Repeat the reproduction test
+----------------------------------------------------------------------
+PS> Copy-Item C:\Windows\System32\notepad.exe C:\LabEvidence\blocktest.exe; (Get-Item C:\LabEvidence\blocktest.exe).Length
+200704
+
+----------------------------------------------------------------------
+STEP 5 - Confirm no new block events since the fix
+----------------------------------------------------------------------
+PS> (Get-WinEvent -FilterHashtable @{LogName='Microsoft-Windows-Sysmon/Operational'; Id=27,28; StartTime=$fix} -ErrorAction SilentlyContinue | Measure-Object).Count
+0
+PS> Remove-Item C:\LabEvidence\blocktest.exe
+
+----------------------------------------------------------------------
+Result
+----------------------------------------------------------------------
+- Config hash changed B3B9EFA9... -> C20B9B98... (new config is live)
+- Executable write succeeded (200,704 bytes)
+- 0 Event 27/28 since the fix
+- Confirmed again at 14:30 baseline: hash C20B9B98..., both FileBlock rules = include (survived reboot)
