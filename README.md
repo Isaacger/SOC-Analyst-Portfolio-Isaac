@@ -9,17 +9,17 @@ Every project includes the commands I ran, the evidence I collected, what the ev
 | # | Project | Focus | Status |
 |---|---|---|---|
 | 01 | [Windows Endpoint Telemetry and SIEM Integration](01-windows-endpoint-telemetry/) | Sysmon, Windows audit policy, Splunk Universal Forwarder, end-to-end log validation | ✅ Complete |
-| 02 | Windows Security Event Investigation | Logon and account activity, timelines | Planned |
-| 03 | Sysmon Endpoint Monitoring | Process and network telemetry, config tuning | Planned |
-| 04 | Splunk Windows Log Investigation | SPL, field validation, alerts, dashboards | Planned |
-| 05 | Sentinel Azure SOC Investigation | KQL, analytics rules, incidents | Planned |
-| 06 | Network Reconnaissance | Nmap discovery and service enumeration (lab only) | Planned |
-| 07 | Wireshark Traffic Investigation | DNS, TCP, HTTP analysis | Planned |
-| 08 | Brute Force Detection Engineering | Failed-logon detections in SPL and KQL, thresholds | Planned |
-| 09 | Phishing Investigation | Headers, URLs, IOCs, verdict | Planned |
-| 10 | Malware Static Analysis | Hashes, strings, imports (safe samples only) | Planned |
-| 11 | Vulnerability Assessment | Scanning an isolated vulnerable target, prioritised findings | Planned |
-| 12 | MITRE Detection Mapping and SOC Automation | ATT&CK-mapped detections, Python/PowerShell tooling | Planned |
+| 02 | Windows Security Event Investigation | Logon and account activity, timelines | 🚧 Coming soon |
+| 03 | Sysmon Endpoint Monitoring | Process and network telemetry, config tuning | 🚧 Coming soon |
+| 04 | Splunk Windows Log Investigation | SPL, field validation, alerts, dashboards | 🚧 Coming soon |
+| 05 | Sentinel Azure SOC Investigation | KQL, analytics rules, incidents | 🚧 Coming soon |
+| 06 | Network Reconnaissance | Nmap discovery and service enumeration (lab only) | 🚧 Coming soon |
+| 07 | Wireshark Traffic Investigation | DNS, TCP, HTTP analysis | 🚧 Coming soon |
+| 08 | Brute Force Detection Engineering | Failed-logon detections in SPL and KQL, thresholds | 🚧 Coming soon |
+| 09 | Phishing Investigation | Headers, URLs, IOCs, verdict | 🚧 Coming soon |
+| 10 | Malware Static Analysis | Hashes, strings, imports (safe samples only) | 🚧 Coming soon |
+| 11 | Vulnerability Assessment | Scanning an isolated vulnerable target, prioritised findings | 🚧 Coming soon |
+| 12 | MITRE Detection Mapping and SOC Automation | ATT&CK-mapped detections, Python/PowerShell tooling | 🚧 Coming soon |
 
 ## Practice labs
 
