@@ -1,0 +1,7 @@
+﻿$start = Get-Date '2026-11-20 15:00'
+Get-WinEvent -FilterHashtable @{LogName='Security'; Id=4720,4722,4724,4738,4732,4733,4726; StartTime=$start} |
+ Sort-Object TimeCreated | ForEach-Object {
+  $d=@{}; ([xml]$_.ToXml()).Event.EventData.Data | ForEach-Object { $d[$_.Name]=$_.'#text' }
+  [pscustomobject]@{Time=$_.TimeCreated.ToUniversalTime().ToString('dd/MM HH:mm:ss'); Id=$_.Id
+   Subject=$d.SubjectUserName; Target=$d.TargetUserName; MemberSid=$d.MemberSid}
+ } | Format-Table -AutoSize

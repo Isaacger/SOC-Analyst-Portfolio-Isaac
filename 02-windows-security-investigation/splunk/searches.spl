@@ -1,0 +1,8 @@
+﻿``` Project 02 - timeline of the labuser scenario (Splunk Cloud, Search & Reporting, time range: Last 7 days) ```
+``` Group-membership events (4732/4733) record the member as a SID, not a name, so a search for "labuser" alone misses them. ```
+``` The third clause adds every change to the Administrators group (Spanish name: Administradores). It is broader than labuser: ```
+``` I checked that the only 4732/4733 events in this time range were the four from my scenario. ```
+``` Splunk displays Helsinki time (UTC+2); timeline.md converts every time to UTC. ```
+index=main LogName=Security (labuser OR labfakeuser OR (EventCode IN (4732,4733) Administradores))
+| sort 0 _time
+| table _time EventCode Message

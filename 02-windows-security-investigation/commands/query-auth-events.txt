@@ -1,0 +1,9 @@
+﻿# Local time; 15:00 local = 13:00 UTC
+$start = Get-Date '2026-11-20 15:00'
+Get-WinEvent -FilterHashtable @{LogName='Security'; Id=4625,4624,4648,4672,4776; StartTime=$start} |
+ Where-Object { $_.Message -match 'labuser|labfakeuser' } | Sort-Object TimeCreated | ForEach-Object {
+  $d=@{}; ([xml]$_.ToXml()).Event.EventData.Data | ForEach-Object { $d[$_.Name]=$_.'#text' }
+  [pscustomobject]@{Time=$_.TimeCreated.ToUniversalTime().ToString('dd/MM HH:mm:ss'); Id=$_.Id
+   User=$d.TargetUserName; LogonType=$d.LogonType; Status=$d.Status; SubStatus=$d.SubStatus
+   LogonId=$d.TargetLogonId; LinkedId=$d.TargetLinkedLogonId; Process=$d.ProcessName}
+ } | Format-Table -AutoSize
