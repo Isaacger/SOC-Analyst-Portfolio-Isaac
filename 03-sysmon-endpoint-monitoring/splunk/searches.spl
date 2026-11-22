@@ -1,0 +1,11 @@
+``` Noise BEFORE (24 h, old config, captured before the change at 16:21 UTC) ```
+index=main source=*Sysmon* earliest=-24h | stats count by EventCode | sort - count
+
+``` Noise AFTER (1 h, new config) ```
+index=main source=*Sysmon* earliest=-1h | stats count by EventCode | sort - count
+
+``` Top sources of noise by process (evidence for the exclusions) ```
+index=main source=*Sysmon* earliest=-24h | eval proc=coalesce(Image, SourceImage) | stats count by EventCode, proc | sort - count | head 20
+
+``` Every Splunk forwarder binary ```
+index=main source=*Sysmon* earliest=-24h (Image="C:\\Program Files\\SplunkUniversalForwarder\\*" OR SourceImage="C:\\Program Files\\SplunkUniversalForwarder\\*") | eval proc=coalesce(Image, SourceImage) | stats count by proc, EventCode | sort proc
