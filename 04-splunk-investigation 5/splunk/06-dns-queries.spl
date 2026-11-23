@@ -1,0 +1,12 @@
+﻿// Search 06: DNS queries by process (Sysmon Event 22)
+// Objective: see which processes resolve names, how many distinct names, and the result codes.
+// Logic: Event 22; file name from Image with rex; stats count, dc(QueryName), values(QueryStatus) by process.
+// Key commands: rex, stats count/dc/values BY, sort, head.
+// False positives: Sysmon certificate checks, Office/OneDrive/Defender updates, browsers.
+// Improvement: alert on a rare process with many unique failing names or very long random-looking names.
+// Limit: status code meanings other than 0 are unverified; 7-day window mixes old and new Sysmon config.
+index=main sourcetype="WinEventLog:Microsoft-Windows-Sysmon/Operational" EventCode=22
+| rex field=Image "(?<proc>[^\\\\]+)$"
+| stats count, dc(QueryName) AS unique_names, values(QueryStatus) AS status BY proc
+| sort - count
+| head 15

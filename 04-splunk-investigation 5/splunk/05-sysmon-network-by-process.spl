@@ -1,0 +1,12 @@
+﻿// Search 05: Sysmon network connections by process (Event 3)
+// Objective: see which processes make network connections, to how many destinations and on which ports.
+// Logic: Event 3; file name extracted from Image with rex; stats count and distinct count (dc) by process.
+// Key commands: rex, stats count/dc/values BY, sort, head.
+// False positives: browsers, OneDrive/Defender updates, the Splunk forwarder (port 9997).
+// Improvement: exclude known processes; alert on rare processes with many destinations or unusual ports.
+// Limit: the 7-day window mixes old and new Sysmon config (changed 2026-11-22 16:21 UTC).
+index=main sourcetype="WinEventLog:Microsoft-Windows-Sysmon/Operational" EventCode=3
+| rex field=Image "(?<proc>[^\\\\]+)$"
+| stats count, dc(DestinationIp) AS unique_destinations, values(DestinationPort) AS ports BY proc
+| sort - count
+| head 15

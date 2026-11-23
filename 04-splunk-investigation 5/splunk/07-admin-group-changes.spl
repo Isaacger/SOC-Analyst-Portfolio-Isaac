@@ -1,0 +1,12 @@
+﻿// Extra search: Administrators group additions (event 4732), filtered by SID S-1-5-32-544, not by group name
+// Objective: who was added to Administrators, by whom, and in which logon session.
+// Logic: 4732 events containing the Administrators SID; rex extracts member SID, actor SID and actor logon ID from the Spanish message text.
+// Key commands: rex, table.
+// False positives: legitimate admin onboarding; software installers adding service accounts.
+// Improvement: alert when member_sid was created (4720) less than 5 minutes earlier.
+// Limit: rex patterns match Spanish text only.
+index=main sourcetype="WinEventLog:Security" EventCode=4732 "S-1-5-32-544"
+| rex field=Message "Miembro:\s+Id\. de seguridad:\s+(?<member_sid>S-[\d-]+)"
+| rex field=Message "Sujeto:\s+Id\. de seguridad:\s+(?<actor_sid>S-[\d-]+)"
+| rex field=Message "Id\. de inicio de sesión:\s+(?<actor_logon_id>0x[0-9A-Fa-f]+)"
+| table _time, actor_sid, member_sid, actor_logon_id

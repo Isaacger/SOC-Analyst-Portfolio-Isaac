@@ -1,0 +1,13 @@
+﻿// Search 01: failed logons by account
+// Objective: which accounts fail to log on, how often, from where and by which logon type.
+// Logic: 4625 events, failed account taken as the LAST value of the multi-value field Nombre_de_cuenta, then summarised with stats.
+// Key commands: eval + mvindex, stats count/min/max/values BY, strftime, sort.
+// False positives: mistyped passwords; services or scheduled tasks with an expired password; saved credentials retrying after a password change.
+// Improvement: bin _time span=10m and where failures>=3 (this became the alert, see alert-failed-logons.spl).
+index=main sourcetype="WinEventLog:Security" EventCode=4625
+| eval failed_account=mvindex(Nombre_de_cuenta,-1)
+| eval logon_type='Tipo de inicio de sesión'
+| eval source_ip='Dirección de red de origen'
+| stats count AS failures, min(_time) AS first_seen, max(_time) AS last_seen, values(logon_type) AS logon_types, values(source_ip) AS sources, values(Subestado) AS substatus BY failed_account
+| eval first_seen=strftime(first_seen,"%Y-%m-%d %H:%M:%S"), last_seen=strftime(last_seen,"%Y-%m-%d %H:%M:%S")
+| sort - failures

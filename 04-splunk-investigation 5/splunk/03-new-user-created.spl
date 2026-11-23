@@ -1,0 +1,12 @@
+﻿// Search 03: new user created (event 4720)
+// Objective: find account creation, who created it and the new account SID.
+// Logic: 4720 events; Nombre_de_cuenta is multi-valued (first = creator, last = new account); rex extracts the new SID from Message.
+// Key commands: eval + mvindex, rex, table.
+// False positives: helpdesk creating accounts, installers creating service accounts, onboarding scripts.
+// Improvement: alert when the creator is not an approved admin or the creation happens outside working hours.
+// Limit: the rex pattern matches Spanish text only.
+index=main sourcetype="WinEventLog:Security" EventCode=4720
+| eval created_account=mvindex(Nombre_de_cuenta,-1)
+| eval created_by=mvindex(Nombre_de_cuenta,0)
+| rex field=Message "Nueva cuenta:\s+Id\. de seguridad:\s+(?<new_sid>S-[\d-]+)"
+| table _time, created_by, created_account, new_sid

@@ -1,0 +1,13 @@
+﻿// Search 04: LOLBin process creation (Sysmon Event 1)
+// Objective: find built-in Windows tools that attackers abuse, with their parents.
+// Logic: Event 1; file name extracted from Image with rex; where match() keeps a LOLBin list; stats by binary.
+// Key commands: rex, where + match + lower, stats count/earliest/latest/values BY, strftime.
+// False positives: the Splunk forwarder starting cmd.exe, admins, installers, scheduled tasks (CompatTelRunner, svchost).
+// Improvement: exclude trusted forwarder parents by full path; alert on Office/browser parents of cmd or powershell.
+// Limit: the 7-day window mixes the old and new Sysmon config (changed 2026-11-22 16:21 UTC).
+index=main sourcetype="WinEventLog:Microsoft-Windows-Sysmon/Operational" EventCode=1
+| rex field=Image "(?<proc>[^\\\\]+)$"
+| where match(lower(proc), "^(cmd|powershell|whoami|certutil|bitsadmin|mshta|rundll32|regsvr32|wmic|net|net1)\.exe$")
+| stats count, earliest(_time) AS first_seen, latest(_time) AS last_seen, values(ParentImage) AS parents BY proc
+| eval first_seen=strftime(first_seen,"%Y-%m-%d %H:%M:%S"), last_seen=strftime(last_seen,"%Y-%m-%d %H:%M:%S")
+| sort - count

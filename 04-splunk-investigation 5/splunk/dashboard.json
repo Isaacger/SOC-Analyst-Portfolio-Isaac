@@ -1,0 +1,140 @@
+{
+  "visualizations": {
+    "viz_1mNAP3eC": {
+      "type": "splunk.column",
+      "dataSources": {
+        "primary": "ds_TssU3jCj"
+      },
+      "title": "Failed logons over time"
+    },
+    "viz_IRRLiT2l": {
+      "type": "splunk.bar",
+      "title": "Failed logons by account",
+      "dataSources": {
+        "primary": "ds_kzdWVCQ3"
+      }
+    },
+    "viz_0yFqEqOc": {
+      "type": "splunk.bar",
+      "dataSources": {
+        "primary": "ds_ETSEyPSJ"
+      },
+      "title": "Failed logons by status"
+    }
+  },
+  "dataSources": {
+    "ds_TssU3jCj": {
+      "type": "ds.search",
+      "options": {
+        "query": "index=main sourcetype=\"WinEventLog:Security\" EventCode=4625 | timechart span=1h count"
+      },
+      "name": "Search_1"
+    },
+    "ds_kzdWVCQ3": {
+      "type": "ds.search",
+      "options": {
+        "query": "index=main sourcetype=\"WinEventLog:Security\" EventCode=4625\n| eval failed_account=mvindex(Nombre_de_cuenta,-1)\n| stats count BY failed_account\n| sort - count"
+      },
+      "name": "Search_2"
+    },
+    "ds_ETSEyPSJ": {
+      "type": "ds.search",
+      "options": {
+        "query": "index=main sourcetype=\"WinEventLog:Security\" EventCode=4625\n| stats count BY Subestado\n| sort - count"
+      },
+      "name": "Search_3"
+    }
+  },
+  "defaults": {
+    "dataSources": {
+      "ds.search": {
+        "options": {
+          "queryParameters": {
+            "latest": "$global_time.latest$",
+            "earliest": "$global_time.earliest$"
+          }
+        }
+      },
+      "ds.spl2": {
+        "options": {
+          "queryParameters": {
+            "latest": "$global_time.latest$",
+            "earliest": "$global_time.earliest$"
+          }
+        }
+      }
+    },
+    "visualizations": {
+      "global": {
+        "showProgressBar": true
+      }
+    }
+  },
+  "inputs": {
+    "input_global_trp": {
+      "type": "input.timerange",
+      "options": {
+        "token": "global_time",
+        "defaultValue": "-30d@d,now"
+      },
+      "title": "Global Time Range"
+    }
+  },
+  "layout": {
+    "options": {},
+    "globalInputs": [
+      "input_global_trp"
+    ],
+    "tabs": {
+      "items": [
+        {
+          "layoutId": "layout_1",
+          "label": "New tab"
+        }
+      ]
+    },
+    "layoutDefinitions": {
+      "layout_1": {
+        "type": "absolute",
+        "structure": [
+          {
+            "item": "viz_1mNAP3eC",
+            "type": "block",
+            "position": {
+              "x": 0,
+              "y": 0,
+              "w": 580,
+              "h": 460
+            }
+          },
+          {
+            "item": "viz_IRRLiT2l",
+            "type": "block",
+            "position": {
+              "x": 0,
+              "y": 460,
+              "w": 580,
+              "h": 490
+            }
+          },
+          {
+            "item": "viz_0yFqEqOc",
+            "type": "block",
+            "position": {
+              "x": 580,
+              "y": 0,
+              "w": 510,
+              "h": 300
+            }
+          }
+        ],
+        "options": {
+          "width": 1440,
+          "height": 960
+        }
+      }
+    }
+  },
+  "description": "",
+  "title": "Windows Investigation"
+}

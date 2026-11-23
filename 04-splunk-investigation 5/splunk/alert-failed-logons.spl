@@ -1,0 +1,14 @@
+﻿// Alert: Failed logons: 3+ in 15 minutes
+// Objective: detect password guessing against one account.
+// Schedule: every 15 minutes (cron */15 * * * *), time range last 15 minutes. 15 minutes is the minimum in this Splunk instance.
+// The window equals the schedule interval so no events fall between runs.
+// Trigger: number of results > 0, for each result. Throttle: suppress on failed_account for 30 minutes.
+// Action: Add to Triggered Alerts (severity Medium).
+// Threshold reasoning: 1 failure is a typo; 3+ for one account in 15 minutes is a pattern (labfakeuser had 5 in about 3 minutes).
+// False positives: expired service-account passwords, saved credentials retrying after a password change, a user locked out and retrying.
+// Improvement: raise the threshold or exclude known service accounts after observing normal volume.
+// Fix applied after the first fire: the logon type field has spaces, so it is copied with eval before stats (values('Tipo de inicio de sesión') came back blank).
+index=main sourcetype="WinEventLog:Security" EventCode=4625 earliest=-15m
+| eval failed_account=mvindex(Nombre_de_cuenta,-1), logon_type='Tipo de inicio de sesión'
+| stats count AS failures, values(logon_type) AS logon_types, values(Subestado) AS substatus BY failed_account
+| where failures>=3

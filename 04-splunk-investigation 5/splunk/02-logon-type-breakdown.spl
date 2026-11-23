@@ -1,0 +1,11 @@
+﻿// Search 02: logon type breakdown
+// Objective: count successful and failed logons by logon type to separate interactive, network and service activity.
+// Logic: 4624 and 4625 events, labelled success or failure with if(), then stats count by logon type and result.
+// Key commands: eval, if, stats count BY, sort.
+// False positives: type 5 (service) logons dominate and are normal; type 7 and 11 are normal unlock/cached logons.
+// Improvement: exclude type 5 or add a timechart, so interactive and network logons are visible.
+index=main sourcetype="WinEventLog:Security" (EventCode=4624 OR EventCode=4625)
+| eval logon_type='Tipo de inicio de sesión'
+| eval result=if(EventCode=4624,"success","failure")
+| stats count BY logon_type, result
+| sort logon_type
