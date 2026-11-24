@@ -10,8 +10,8 @@ Every project includes the commands I ran, the evidence I collected, what the ev
 |---|---|---|---|
 | 01 | [Windows Endpoint Telemetry and SIEM Integration](01-windows-endpoint-telemetry/) | Sysmon, Windows audit policy, Splunk Universal Forwarder, end-to-end log validation | ✅ Complete |
 | 02 | [Windows Security Event Investigation](02-windows-security-investigation/) | Account lifecycle and logon investigation, failed-logon triage, UTC timeline in PowerShell and Splunk | ✅ Complete |
-| 03 | Sysmon Endpoint Monitoring | Process and network telemetry, config tuning | 🚧 Coming soon |
-| 04 | Splunk Windows Log Investigation | SPL, field validation, alerts, dashboards | 🚧 Coming soon |
+ 03 | [Sysmon Endpoint Monitoring](03-sysmon-endpoint-monitoring/) | Process and network telemetry, config tuning | ✅ Complete |
+| 04 | [Splunk Windows Log Investigation](04-splunk-investigation/) | SPL, field validation, alerts, dashboards | ✅ Complete |
 | 05 | Sentinel Azure SOC Investigation | KQL, analytics rules, incidents | 🚧 Coming soon |
 | 06 | Network Reconnaissance | Nmap discovery and service enumeration (lab only) | 🚧 Coming soon |
 | 07 | Wireshark Traffic Investigation | DNS, TCP, HTTP analysis | 🚧 Coming soon |
